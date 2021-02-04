@@ -19,6 +19,25 @@ export default class MusicPlayer extends React.Component {
         this.state = { playing:false, tick: 0, isMuted: false, volume: settings.getVolume() }
         this.volumeBeforeMutting = 1.0
         this.isSeeking = false
+
+        if ('mediaSession' in navigator) {            
+            navigator.mediaSession.setActionHandler('play', this.play.bind(this));
+            navigator.mediaSession.setActionHandler('pause', this.pause.bind(this));
+            navigator.mediaSession.setActionHandler('previoustrack', this.playPreviousSong.bind(this));
+            navigator.mediaSession.setActionHandler('nexttrack', this.playNextSong.bind(this));
+        }
+    }
+
+    play() {
+        if (!this.state.playing) {
+            this.togglePlayerState();
+        }
+    }
+
+    pause() {
+        if (this.state.playing) {
+            this.togglePlayerState();
+        }
     }
 
     componentDidUpdate(prevProps) {
