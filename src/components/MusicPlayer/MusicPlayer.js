@@ -76,6 +76,16 @@ export default class MusicPlayer extends React.Component {
                 document.title = `${newSong.title} - ${newSong.artist}`
                 // Scrobble
                 shouldScrobble && subsonic.scrobble(newSong.id, Date.now(), false)
+                // Update media session metadata
+                if ('mediaSession' in navigator) {         
+                    var artworkSrc = newSong.coverArt ? subsonic.getCoverArtUrl(newSong.coverArt) : "/currently_placeholder.png";
+                    navigator.mediaSession.metadata = new window.MediaMetadata({
+                        title: newSong.title,
+                        artist: newSong.artist,
+                        album: newSong.album,
+                        artwork: [{ src: artworkSrc, sizes: "96x96 128x128 192x192 256x256 384x384 512x512", type: "image/png" }]
+                    });
+                }
             }
         }
         // If there is no song to play, stop whatever was playing
